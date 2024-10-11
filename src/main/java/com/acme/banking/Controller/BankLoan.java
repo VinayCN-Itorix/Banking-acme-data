@@ -11,9 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.rmi.server.UID;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -52,7 +50,7 @@ public ResponseEntity<?> authenticate(@RequestHeader (value = "enableTracing", r
         headers.add("deviateResponse",String.valueOf(deviateResponse));
         HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(headers);
         String url = String.format(loan,customerId);
-        restTemplate.exchange(new URI(loan), HttpMethod.POST, httpEntity, Object.class);
+        restTemplate.exchange(new URI(url), HttpMethod.POST, httpEntity, Object.class);
     }
     String data = """
                    {
@@ -81,15 +79,15 @@ public ResponseEntity<?> applyForLoan(@RequestHeader(value = "enableTracing", re
     if(enableTracing){
         Map<String,Object> map = null;
         String errorData = """
-                               {
-                               "error": "Loan Documents are not valid",
-                               "details": "Unable to process your loan application"
+                                {
+                       "status": "Rejected",
+                       "AccountNo":"US39RABO1284418839"
                                }
                                """;
         String data = """
                        {
                        "status": "UnderVerification",
-                       "AccountNo":"US39RABO1284418839",
+                       "AccountNo":"US39RABO1284418839"
                        }
                        """;
         String SSN = String.valueOf(UUID.randomUUID());
@@ -104,7 +102,6 @@ public ResponseEntity<?> applyForLoan(@RequestHeader(value = "enableTracing", re
         headers.add("enableTracing",String.valueOf(Boolean.TRUE));
         headers.add("deviateResponse",String.valueOf(deviateResponse));
         HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(headers);
-        
         String url = String.format(creditScore,SSN);
         restTemplate.exchange(new URI(url), HttpMethod.GET, httpEntity, Object.class);
     }
@@ -220,7 +217,7 @@ public ResponseEntity<?> verifyIncome(@RequestHeader(value = "enableTracing", re
         headers.add("enableTracing",String.valueOf(Boolean.TRUE));
         headers.add("deviateResponse",String.valueOf(deviateResponse));
         HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(map, headers);
-        restTemplate.exchange(new URI(risk), HttpMethod.GET, httpEntity, Object.class);
+        restTemplate.exchange(new URI(risk), HttpMethod.POST, httpEntity, Object.class);
     }
     if (deviateResponse) {
         String errorData = """
@@ -285,7 +282,7 @@ public ResponseEntity<?> assessRisk(@RequestHeader(value = "enableTracing", requ
                        {
                        "riskScore": 90,
                        "riskCategory": "High",
-                        "loanApproved":false
+                        "Approved":false
                        }
                        """;
         Map<String, Object> errorMap = objectMapper.readValue(data, Map.class);
@@ -301,7 +298,7 @@ public ResponseEntity<?> assessRisk(@RequestHeader(value = "enableTracing", requ
                            "Interest rate at 3.5%",
                            "Tenure 24 Months"
                        ],
-                       "loanApproved":true
+                       "Approved":true
                        }
                        """;
     Map<String, Object> map = objectMapper.readValue(data, Map.class);
@@ -328,6 +325,12 @@ public ResponseEntity<?> sendNotification(@RequestHeader(value = "enableTracing"
                        """;
     Map<String, Object> map = objectMapper.readValue(data, Map.class);
     return new ResponseEntity<>(map, HttpStatus.OK);
+}
+@PostMapping("/loan/reject/{applicationId}")
+public ResponseEntity<?> rejectLoan(@RequestHeader(value = "enableTracing", required = false) boolean enableTracing,
+                                      @RequestHeader(value = "deviateResponse", required = false) boolean deviateResponse,
+                                      @PathVariable (value = "applicationId") String applicationId) throws JsonProcessingException{
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 }
 
 }

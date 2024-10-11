@@ -46,7 +46,6 @@ public ResponseEntity<?> register(@RequestHeader(value = "enableTracing", requir
                                   @RequestBody (required = false)Map<String,Object> inputData ) throws JsonProcessingException, URISyntaxException {
     String Data= """
             {
-              "customerId": "CUST12345",
               "status": "SUCCESS",
               "message": "Customer profile created successfully"
             }
