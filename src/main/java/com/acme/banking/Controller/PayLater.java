@@ -177,8 +177,6 @@ public ResponseEntity<?> confirmOrder(@RequestHeader(value = "enableTracing", re
         return new ResponseEntity<>(orderStatusResponse.getBody(), HttpStatus.OK);
     }
     return new ResponseEntity<>(orderConfirmResponse, HttpStatus.OK);
-    
-    
 }
 
 @PutMapping("/order/status")
