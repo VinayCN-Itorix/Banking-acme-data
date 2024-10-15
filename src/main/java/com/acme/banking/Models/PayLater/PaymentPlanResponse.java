@@ -13,5 +13,6 @@ public class PaymentPlanResponse {
 private String transactionId;
 private String status;
 private PaymentPlan paymentPlan;
+private OrderConfirmRequest orderConfirmRequest;
 
 }

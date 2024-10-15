@@ -13,4 +13,5 @@ public class TransactionResponse {
 private String transactionId;
 private String status;
 private String redirectUrl;
+private AuthenticateRequest authenticateRequest;
 }

@@ -13,4 +13,5 @@ public class OrderConfirmResponse {
 private String orderId;
 private String status;
 private boolean acknowledgement;
+private OrderStatusRequest orderStatusRequest;
 }

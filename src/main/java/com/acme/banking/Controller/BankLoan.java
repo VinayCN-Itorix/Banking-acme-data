@@ -66,7 +66,7 @@ public ResponseEntity<?> authenticate(@RequestHeader (value = "enableTracing", r
                    }
                    """;
         Map<String,Object>  map = objectMapper.readValue(errorData, Map.class);
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
     Map<String,Object>  map = objectMapper.readValue(data, Map.class);
     return new ResponseEntity<>(map, HttpStatus.OK);
@@ -113,7 +113,7 @@ public ResponseEntity<?> applyForLoan(@RequestHeader(value = "enableTracing", re
                                }
                                """;
         Map<String, Object> errorMap = objectMapper.readValue(errorData, Map.class);
-        return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMap, HttpStatus.OK);
     }
     
     String data = """
@@ -286,7 +286,7 @@ public ResponseEntity<?> assessRisk(@RequestHeader(value = "enableTracing", requ
                        }
                        """;
         Map<String, Object> errorMap = objectMapper.readValue(data, Map.class);
-        return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMap, HttpStatus.OK);
     }
     
     String data = """
@@ -316,7 +316,7 @@ public ResponseEntity<?> sendNotification(@RequestHeader(value = "enableTracing"
                                }
                                """;
         Map<String, Object> errorMap = objectMapper.readValue(errorData, Map.class);
-        return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMap, HttpStatus.OK);
     }
     String data = """
                        {

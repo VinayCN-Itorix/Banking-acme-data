@@ -71,12 +71,13 @@ public ResponseEntity<?> validateCustomer(@RequestHeader(value = "enableTracing"
     customerEligibleResponse.setCreditScore("700");
     customerEligibleResponse.setEligible(true);
     customerEligibleResponse.setApprovedLimit(550.49);
+    TransactionRequest transactionRequest = new TransactionRequest();
+    transactionRequest.setCustomerId(customerId);
+    transactionRequest.setAmount(500);
+    customerEligibleResponse.setTransactionRequest(transactionRequest);
     if(enableTracing){
         HttpHeaders headers = getHttpHeaders(enableTracing, deviateResponse);
         headers.add("Content-Type","application/json");
-        TransactionRequest transactionRequest = new TransactionRequest();
-        transactionRequest.setCustomerId(customerId);
-        transactionRequest.setAmount(500);
         HttpEntity<TransactionRequest> transactionEntity = new HttpEntity<>(transactionRequest, headers);
         URI initiateTransactionUri = new URI(initiateTransaction);
         OrderStatusResponse transactionResponse = restTemplate.exchange(initiateTransactionUri, HttpMethod.POST, transactionEntity, OrderStatusResponse.class).getBody();
@@ -100,11 +101,13 @@ public ResponseEntity<?> initiateTransaction(@RequestHeader(value = "enableTraci
     transactionResponse.setTransactionId(String.valueOf(UUID.randomUUID()));
     transactionResponse.setStatus("pending");
     transactionResponse.setRedirectUrl(String.format("https://,%s,/auth/authenticate?txn=,%s", host, transactionResponse.getTransactionId()));
+    AuthenticateRequest authenticateRequest = new AuthenticateRequest();
+    authenticateRequest.setTransactionId(transactionResponse.getTransactionId());
+    authenticateRequest.setAuthToken(String.valueOf(UUID.randomUUID()));
+    transactionResponse.setAuthenticateRequest(authenticateRequest);
     if(enableTracing){
         HttpHeaders headers = getHttpHeaders(enableTracing, deviateResponse);
         headers.add("Content-Type","application/json");
-        AuthenticateRequest authenticateRequest = new AuthenticateRequest();
-        authenticateRequest.setTransactionId(transactionResponse.getTransactionId());
         HttpEntity<AuthenticateRequest> authenticateEntity = new HttpEntity<>(authenticateRequest, headers);
         URI authenticateUri = new URI(authenticate);
         OrderStatusResponse authenticateResponse = restTemplate.exchange(authenticateUri, HttpMethod.POST, authenticateEntity, OrderStatusResponse.class).getBody();
@@ -143,11 +146,12 @@ public ResponseEntity<?> paymentPlan(@RequestHeader(value = "enableTracing", req
     paymentPlanResponse.setPaymentPlan(paymentPlan);
     paymentPlanResponse.setTransactionId(transactionId);
     paymentPlanResponse.setStatus("approved");
+    OrderConfirmRequest orderConfirmRequest = new OrderConfirmRequest();
+    orderConfirmRequest.setOrderId(UUID.randomUUID().toString());
+    paymentPlanResponse.setOrderConfirmRequest(orderConfirmRequest);
     if(enableTracing){
         HttpHeaders headers = getHttpHeaders(enableTracing, deviateResponse);
         headers.add("Content-Type","application/json");
-        OrderConfirmRequest orderConfirmRequest = new OrderConfirmRequest();
-        orderConfirmRequest.setOrderId(UUID.randomUUID().toString());
         HttpEntity<OrderConfirmRequest> confirmOrderEntity = new HttpEntity<>(orderConfirmRequest, headers);
         URI confirmOrderUri = new URI(confirmOrder);
         OrderStatusResponse orderStatusResponse = restTemplate.exchange(confirmOrderUri, HttpMethod.POST, confirmOrderEntity, OrderStatusResponse.class).getBody();
@@ -164,13 +168,13 @@ public ResponseEntity<?> confirmOrder(@RequestHeader(value = "enableTracing", re
     orderConfirmResponse.setAcknowledgement(true);
     orderConfirmResponse.setOrderId(orderConfirmRequest.getOrderId());
     orderConfirmResponse.setStatus("ready for fulfillment");
-    
+    OrderStatusRequest orderStatusRequest = new OrderStatusRequest();
+    orderStatusRequest.setOrderId(orderConfirmRequest.getOrderId());
+    orderStatusRequest.setStatus("ready for fulfillment");
+    orderConfirmResponse.setOrderStatusRequest(orderStatusRequest);
     if(enableTracing){
         HttpHeaders headers = getHttpHeaders(enableTracing, deviateResponse);
         headers.add("Content-Type","application/json");
-        OrderStatusRequest orderStatusRequest = new OrderStatusRequest();
-        orderStatusRequest.setOrderId(orderConfirmRequest.getOrderId());
-        orderStatusRequest.setStatus("ready for fulfillment");
         HttpEntity<OrderStatusRequest> updateOrderEntity = new HttpEntity<>(orderStatusRequest, headers);
         URI updateOrderStatusUri = new URI(updateOrderStatus);
         ResponseEntity<OrderStatusResponse> orderStatusResponse = restTemplate.exchange(updateOrderStatusUri, HttpMethod.PUT, updateOrderEntity, OrderStatusResponse.class);

@@ -14,4 +14,5 @@ private String customerId;
 private boolean eligible;
 private String creditScore;
 private double approvedLimit;
+private TransactionRequest transactionRequest;
 }
