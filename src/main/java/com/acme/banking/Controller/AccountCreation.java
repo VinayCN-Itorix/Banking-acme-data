@@ -82,7 +82,7 @@ public ResponseEntity<?> kyc(@RequestHeader(value = "enableTracing", required = 
         headers.add("enableTracing",String.valueOf(Boolean.TRUE));
         headers.add("deviateResponse",String.valueOf(deviateResponse));
         HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(map, headers);
-        String url = String.format(eKycVerification,custId);
+        String url = String.format(accounts,custId);
         restTemplate.exchange(new URI(url), HttpMethod.POST, httpEntity, Object.class);
     }
     return new ResponseEntity<>(map,HttpStatus.OK);
@@ -125,7 +125,7 @@ public ResponseEntity<?> account(@RequestHeader(value = "enableTracing", require
         return new ResponseEntity<>(map,HttpStatus.OK);
     }
     Map<String, Object> map = objectMapper.readValue(Data, Map.class);
-    map.put("accountNumber","1234567890");
+    map.put("accountNumber","7284000041732");
     if(enableTracing){
         HttpHeaders headers = new HttpHeaders();
         headers.add("enableTracing",String.valueOf(Boolean.TRUE));
@@ -143,7 +143,7 @@ public ResponseEntity<?> issueCard(@RequestHeader(value = "enableTracing", requi
                                    @PathVariable (value = "accountId") String accountId ) throws JsonProcessingException, URISyntaxException {
     String Data= """
             {
-              "cardNumber": "4111111111111111",
+              "cardNumber": "4503 7209 8361 7023",
               "expiryDate": "12/26",
               "status": "ISSUED",
               "message": "Debit card issued successfully"
@@ -171,6 +171,7 @@ public ResponseEntity<?> issueCard(@RequestHeader(value = "enableTracing", requi
                  {
               "status": "ACTIVE",
               "message": "Card activated successfully"
+              
             }
                 """;
     Map<String, Object> map = objectMapper.readValue(Data, Map.class);

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentPlan {
-private int installments;
-private double interestRate;
-private double monthlyPayment;
+private String installments;
+private String interestRate;
+private String monthlyPayment;
 
 }

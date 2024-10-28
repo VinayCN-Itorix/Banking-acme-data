@@ -56,7 +56,7 @@ public ResponseEntity<?> validateProducts(@RequestHeader(value = "enableTracing"
         headers.add("deviateResponse", String.valueOf(deviateResponse));
         URI validateCustomerUri = new URI(String.format(validateCustomer, loanEligibilityRequest.getCustomerId()));
         HttpEntity<LoanEligibilityResponse> httpEntity = new HttpEntity<>(loanEligibilityResponse, headers);
-        OrderStatusResponse customerResponse = restTemplate.exchange(validateCustomerUri, HttpMethod.GET, httpEntity, OrderStatusResponse.class).getBody();
+            OrderStatusResponse customerResponse = restTemplate.exchange(validateCustomerUri, HttpMethod.GET, httpEntity, OrderStatusResponse.class).getBody();
         return new ResponseEntity<>(customerResponse, HttpStatus.OK);
     }
     return new ResponseEntity<>(loanEligibilityResponse, HttpStatus.OK);
@@ -140,9 +140,9 @@ public ResponseEntity<?> paymentPlan(@RequestHeader(value = "enableTracing", req
                                      @PathVariable(value = "transactionId") String transactionId) throws URISyntaxException {
     PaymentPlanResponse paymentPlanResponse = new PaymentPlanResponse();
     PaymentPlan paymentPlan = new PaymentPlan();
-    paymentPlan.setMonthlyPayment(167.5);
-    paymentPlan.setInstallments(3);
-    paymentPlan.setInterestRate(0.5);
+    paymentPlan.setMonthlyPayment("$167.5");
+    paymentPlan.setInstallments("3 installments");
+    paymentPlan.setInterestRate("0.5%");
     paymentPlanResponse.setPaymentPlan(paymentPlan);
     paymentPlanResponse.setTransactionId(transactionId);
     paymentPlanResponse.setStatus("approved");
